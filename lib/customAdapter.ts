@@ -1,3 +1,4 @@
+// lib/customAdapter.ts
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/prisma/client";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
@@ -7,12 +8,12 @@ export function CustomPrismaAdapter(): Adapter {
 
   return {
     ...defaultAdapter,
+
     async createUser(user: Omit<AdapterUser, "id">) {
       const nameParts = (user.name || "").split(" ");
       const fname = nameParts[0] || null;
       const lname = nameParts.slice(1).join(" ") || null;
 
-      // Only include AdapterUser-compatible fields
       const createdUser = await prisma.user.create({
         data: {
           email: user.email,
@@ -20,12 +21,11 @@ export function CustomPrismaAdapter(): Adapter {
           fname,
           lname,
           role: "USER", // default role
-          emailVerified: null, // must exist for AdapterUser
-          username: null,       // must exist if your Adapter expects it
+          emailVerified: user.emailVerified || null,
+          username: user.name || null, // safe default
         },
       });
 
-      // Map PrismaUser to AdapterUser shape
       return {
         id: createdUser.id,
         name: `${createdUser.fname || ""} ${createdUser.lname || ""}`.trim(),
@@ -36,4 +36,3 @@ export function CustomPrismaAdapter(): Adapter {
     },
   };
 }
-

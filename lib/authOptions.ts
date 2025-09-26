@@ -1,3 +1,4 @@
+// lib/authOptions.ts
 /* eslint-disable no-param-reassign */
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
@@ -19,21 +20,20 @@ export const authOptions: NextAuthOptions = {
     }),
     EmailProvider({
       server: {
-        host: process.env.EMAIL_SERVER_HOST,
+        host: process.env.EMAIL_SERVER_HOST!,
         port: Number(process.env.EMAIL_SERVER_PORT),
         auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
+          user: process.env.EMAIL_SERVER_USER!,
+          pass: process.env.EMAIL_SERVER_PASSWORD!,
         },
       },
-      from: process.env.EMAIL_FROM,
+      from: process.env.EMAIL_FROM!,
     }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    // Session callback
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
@@ -46,17 +46,14 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-
-    // JWT callback
     async jwt({ token, user }) {
-      // First login: user object exists
       if (user && "id" in user) {
-        const u = user as PrismaUser; // type assertion to PrismaUser
+        const u = user as PrismaUser;
         token.id = u.id;
         token.role = u.role;
         token.username = u.username || "";
-        token.team = u.team_id;
-        token.name = (u.fname || "") + (u.lname ? ` ${u.lname}` : "");
+        token.team = u.team_id || null;
+        token.name = `${u.fname || ""} ${u.lname || ""}`.trim();
         token.picture = u.image || null;
         token.email = u.email;
       }
