@@ -18,7 +18,7 @@ interface CourseSidebarProps {
   progressCount: number;
 }
 
-export function CourseSidebar({ course, progressCount }: CourseSidebarProps) {
+export async function CourseSidebar({ course, progressCount }: CourseSidebarProps) {
   const session = await getServerSession(authOptions);
 
   if (!session) {

@@ -15,7 +15,7 @@ interface Props {
   };
 }
 
-function CoursesPage({ searchParams }: Props) {
+async function CoursesPage({ searchParams }: Props) {
   const session = await getServerSession(authOptions);
   if (!session) return redirect("/");
   const categories = await prisma.category.findMany({

@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { DataTable } from "./components/data-table";
 import { columns } from "./components/columns";
 
-function LmsCoursesPage() {
+async function LmsCoursesPage() {
   const session = await getServerSession(authOptions);
   // only admin can post
   if (session?.user.role !== "ADMIN") {

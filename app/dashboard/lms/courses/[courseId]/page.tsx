@@ -19,7 +19,7 @@ interface Props {
   params: { courseId: string };
 }
 
-function AdminCoursePage({ params: { courseId } }: Props) {
+async function AdminCoursePage({ params: { courseId } }: Props) {
   // check if its an admin
   const session = await getServerSession(authOptions);
   if (session?.user.role !== "ADMIN") return redirect("/");

@@ -7,7 +7,7 @@ import { authOptions } from "@/lib/authOptions";
 import { CourseSidebar } from "./components/course-sidebar";
 import { CourseNavbar } from "./components/course-navbar";
 
-function CourseLayout({
+async function CourseLayout({
   children,
   params,
 }: {

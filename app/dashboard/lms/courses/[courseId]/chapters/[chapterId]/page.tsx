@@ -17,7 +17,7 @@ interface Props {
   params: { courseId: string; chapterId: string };
 }
 
-function ChapterPage({ params: { courseId, chapterId } }: Props) {
+async function ChapterPage({ params: { courseId, chapterId } }: Props) {
   const session = await getServerSession(authOptions);
   // only admin can post
   if (session?.user.role !== "ADMIN") {

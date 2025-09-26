@@ -14,7 +14,7 @@ import { VideoPlayer } from "./components/video-player";
 import { CourseEnrollButton } from "./components/course-enroll-button";
 import { CourseProgressButton } from "./components/course-progress-button";
 
-function ChapterIdPage({ params }: { params: { courseId: string; chapterId: string } }) {
+async function ChapterIdPage({ params }: { params: { courseId: string; chapterId: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return redirect("/");
