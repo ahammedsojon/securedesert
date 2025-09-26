@@ -1,15 +1,14 @@
 import { redirect } from "next/navigation";
-
 import { getAnalytics } from "@/actions/get-analytics";
-
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { DataCard } from "./components/data-card";
 import { Chart } from "./components/chart";
 
-function AnalyticsPage() {
+export default async function AnalyticsPage() {
   const session = await getServerSession(authOptions);
-  // only admin can post
+
+  // only admin can access
   if (session?.user.role !== "ADMIN") {
     return redirect("/");
   }
@@ -26,5 +25,3 @@ function AnalyticsPage() {
     </div>
   );
 }
-
-export default AnalyticsPage;
