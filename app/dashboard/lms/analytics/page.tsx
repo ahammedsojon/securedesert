@@ -1,3 +1,4 @@
+// app/dashboard/lms/analytics/page.tsx
 import { redirect } from "next/navigation";
 import { getAnalytics } from "@/actions/get-analytics";
 import { getServerSession } from "next-auth";
@@ -8,8 +9,7 @@ import { Chart } from "./components/chart";
 export default async function AnalyticsPage() {
   const session = await getServerSession(authOptions);
 
-  // only admin can access
-  if (session?.user.role !== "ADMIN") {
+  if (!session || session.user.role !== "ADMIN") {
     return redirect("/");
   }
 

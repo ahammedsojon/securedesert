@@ -8,22 +8,32 @@ export function CustomPrismaAdapter(): Adapter {
   return {
     ...defaultAdapter,
     async createUser(user: Omit<AdapterUser, "id">) {
-      // user.name comes from provider (full name)
       const nameParts = (user.name || "").split(" ");
       const fname = nameParts[0] || null;
       const lname = nameParts.slice(1).join(" ") || null;
 
+      // Only include AdapterUser-compatible fields
       const createdUser = await prisma.user.create({
         data: {
           email: user.email,
           image: user.image,
           fname,
           lname,
-          role: "USER", // default role if needed
+          role: "USER", // default role
+          emailVerified: null, // must exist for AdapterUser
+          username: null,       // must exist if your Adapter expects it
         },
       });
 
-      return createdUser as AdapterUser;
+      // Map PrismaUser to AdapterUser shape
+      return {
+        id: createdUser.id,
+        name: `${createdUser.fname || ""} ${createdUser.lname || ""}`.trim(),
+        email: createdUser.email,
+        emailVerified: createdUser.emailVerified,
+        image: createdUser.image,
+      };
     },
   };
 }
+
