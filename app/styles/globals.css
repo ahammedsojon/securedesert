@@ -1,0 +1,16 @@
+.fill-box {
+  transform-box: fill-box;
+  will-change: transform;
+}
+
+.animate-glow {
+  will-change: filter;
+}
+
+body {
+  font-family: var(--font-family);
+}
+
+.ql-container {
+  font-size: 16px !important;
+}

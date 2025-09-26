@@ -1,0 +1,149 @@
+.p-card {
+  border-radius: 3px;
+  @apply border border-border bg-card text-card-foreground;
+}
+
+.p-inputtext,
+.p-password {
+  @apply w-full;
+}
+
+.p-avatar-circle {
+  @apply rounded-full;
+}
+
+.p-button {
+  @apply inline-flex min-w-0 items-center justify-center whitespace-nowrap rounded-sm p-2 text-sm shadow-sm ring-primary ring-offset-background transition-all hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+}
+
+.p-button.p-button-text:enabled:hover,
+.p-button.p-button-text:not(button):not(a):not(.p-disabled):hover {
+  @apply bg-primary/10;
+}
+
+.p-button.p-button-text {
+  @apply border-none bg-transparent text-foreground-alt shadow-none transition-colors hover:shadow-none focus:text-primary;
+}
+
+.p-button.p-button-icon-only {
+  @apply aspect-square h-auto w-auto;
+}
+
+.p-button.p-button-sm {
+  @apply p-2;
+}
+
+/* Accordion */
+.p-accordion {
+  @apply rounded border border-primary shadow-sm shadow-primary;
+}
+
+.p-accordion .p-accordion-header {
+  @apply border-y border-primary font-hHackout;
+}
+
+.p-accordion-tab:hover .p-accordion-header .p-accordion-header-link,
+.p-accordion-tab.p-accordion-tab-active .p-accordion-header .p-accordion-header-link {
+  @apply text-primary !important;
+}
+
+.p-accordion .p-accordion-tab.p-accordion-tab-active {
+  @apply mb-0;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  @apply bg-card text-card-foreground no-underline;
+}
+
+.p-accordion .p-accordion-content {
+  @apply bg-background;
+}
+
+.p-carousel .p-carousel-content .p-carousel-prev,
+.p-carousel .p-carousel-content .p-carousel-next {
+  @apply text-primary;
+}
+
+.p-carousel .p-carousel-content .p-carousel-prev:enabled:hover,
+.p-carousel .p-carousel-content .p-carousel-next:enabled:hover {
+  @apply bg-primary/20 text-primary;
+}
+
+.p-carousel .p-carousel-indicators .p-carousel-indicator button {
+  @apply h-3 w-3 rounded-full bg-primary/20;
+}
+
+.p-carousel .p-carousel-indicators .p-carousel-indicator button:hover {
+  @apply bg-primary;
+}
+
+.p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+  @apply bg-primary shadow-sm;
+}
+
+.p-divider {
+  height: 1px;
+  @apply bg-foreground-alt/30;
+}
+
+.p-divider .p-divider-content {
+  @apply bg-popover;
+}
+
+.p-paginator {
+  @apply bg-card;
+}
+
+.p-datatable {
+  @apply border-y border-primary text-card-foreground;
+}
+
+.p-datatable .p-datatable-tbody > tr > td,
+.p-datatable .p-datatable-thead > tr > th {
+  @apply border-border bg-card;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  @apply font-hHackout text-primary;
+}
+
+.p-datatable .p-datatable-tbody > tr > td .p-row-toggler,
+.p-datatable .p-datatable-tbody > tr > td .p-row-editor-init,
+.p-datatable .p-datatable-tbody > tr > td .p-row-editor-save,
+.p-datatable .p-datatable-tbody > tr > td .p-row-editor-cancel {
+  @apply rounded text-primary;
+}
+
+.p-datatable .p-datatable-tbody > tr > td .p-row-toggler:enabled:hover,
+.p-datatable .p-datatable-tbody > tr > td .p-row-editor-init:enabled:hover,
+.p-datatable .p-datatable-tbody > tr > td .p-row-editor-save:enabled:hover,
+.p-datatable .p-datatable-tbody > tr > td .p-row-editor-cancel:enabled:hover {
+  @apply bg-primary/10 text-primary;
+}
+
+.p-datatable tr.p-datatable-row-expansion .p-datatable,
+.p-datatable .p-datatable-tbody > tr:last-of-type > td {
+  @apply border-none;
+}
+
+.p-tooltip .p-tooltip-text {
+  @apply border border-border bg-card text-card-foreground;
+}
+
+.p-divider.p-divider-horizontal {
+  @apply px-2;
+}
+
+.p-selectbutton .p-button {
+  @apply border-none bg-transparent shadow-none;
+}
+
+.p-selectbutton .p-button:focus.p-highlight,
+.p-selectbutton .p-button.p-highlight:hover,
+.p-selectbutton .p-button.p-highlight {
+  @apply bg-primary/10 text-primary shadow-none;
+}
+
+.p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
+  @apply bg-primary/10 shadow-none;
+}

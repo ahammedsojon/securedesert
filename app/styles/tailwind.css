@@ -1,0 +1,99 @@
+@layer tailwind-base, primereact, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+@layer base {
+  :root {
+    --background: 216 16% 6%;
+    --foreground: 210 40% 98%;
+    --foreground-alt: 213 5% 66%;
+
+    --card: 210 14% 11%;
+    --card-foreground: 213 5% 66%;
+    --popover: 210 14% 11%;
+    --popover-foreground: 213 5% 66%;
+
+    --primary: 9 95% 62%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210, 14%, 20%;
+    --radius: 6px;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --danger: 0 95% 62%;
+    --success: 137 95% 62%;
+    --info: 187 95% 62%;
+    --warning: 50 95% 62%;
+    --help: 288 95% 62%;
+
+    --fz-sm: clamp(0.8rem, 0.17vw + 0.76rem, 0.89rem);
+    --fz-base: clamp(1rem, 0.34vw + 0.91rem, 1.19rem);
+    --fz-md: clamp(1.25rem, 0.61vw + 1.1rem, 1.58rem);
+    --fz-lg: clamp(1.56rem, 1vw + 1.31rem, 2.11rem);
+    --fz-xl: clamp(1.95rem, 1.56vw + 1.56rem, 2.81rem);
+    --fz-2xl: clamp(2.44rem, 2.38vw + 1.85rem, 3.75rem);
+    --fz-3xl: clamp(3.05rem, 3.54vw + 2.17rem, 5rem);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-base text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-hHackout font-bold text-primary;
+  }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+
+  h4 {
+    @apply text-lg;
+  }
+
+  h5 {
+    @apply text-md;
+  }
+
+  h6 {
+    @apply text-base;
+  }
+}

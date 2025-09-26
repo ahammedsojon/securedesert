@@ -1,0 +1,461 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model challenge_solved {
+  id                  String             @id @default(cuid())
+  challengeId         String
+  userId              String
+  createAt            DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  season_ChallengesId String?
+  challenge           challenges         @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  season_challenges   season_challenges? @relation(fields: [season_ChallengesId], references: [id])
+  user                user               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([challengeId], map: "challenge_solved_challengeId_fkey")
+  @@index([season_ChallengesId], map: "challenge_solved_season_ChallengesId_fkey")
+  @@index([userId], map: "challenge_solved_userId_fkey")
+}
+
+model account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_fkey")
+
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@index([userId], map: "Account_userId_fkey")
+}
+
+model achievements {
+  id          String   @id
+  title       String
+  image       String?
+  description String?
+  userId      String
+  createAt    DateTime @default(now())
+  updatedAt   DateTime
+  user        user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Achievements_userId_fkey")
+
+  @@index([userId], map: "Achievements_userId_fkey")
+}
+
+model attachment {
+  id        String   @id @default(cuid())
+  name      String
+  url       String   @db.Text
+  courseId  String
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    course   @relation(fields: [courseId], references: [id], onDelete: Cascade, map: "Attachment_courseId_fkey")
+
+  @@index([courseId], map: "Attachment_courseId_idx")
+}
+
+model blogs {
+id       String @id @default(cuid())
+  title       String
+  content     Json?
+  thumbnail   String?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  authorId    String
+  description String?
+  tags        Json?
+  user        user     @relation(fields: [authorId], references: [id], map: "Blogs_authorId_fkey")
+
+  @@index([authorId], map: "Blogs_authorId_fkey")
+}
+
+model category {
+  id    String @id @default(cuid())  // or @default(uuid())
+  name   String   @unique(map: "Category_name_key")
+  course course[]
+}
+
+model challenge_tag {
+  id           String      @id
+  tag_id       String
+  challengesId String?
+  challenges   challenges? @relation(fields: [challengesId], references: [id], map: "Challenge_Tag_challengesId_fkey")
+  tag          tag         @relation(fields: [tag_id], references: [id], map: "Challenge_Tag_tag_id_fkey")
+
+  @@index([challengesId], map: "Challenge_Tag_challengesId_fkey")
+  @@index([tag_id], map: "Challenge_Tag_tag_id_fkey")
+}
+
+model challenges {
+id           String   @id @default(cuid())
+  title            String                @unique(map: "Challenges_title_key")
+  thumbnail        String?
+  difficulty       challenges_difficulty
+  points           Int
+  flag             String
+  created_date     DateTime              @default(now()) @db.Timestamp(0)
+  published        Boolean               @default(false)
+  first_blood      String?
+  category         String
+  writeupsId       String?
+  description      String?
+  challenge_solved challenge_solved[]
+  challenge_tag    challenge_tag[]
+  user             user?                 @relation(fields: [first_blood], references: [id], map: "Challenges_first_blood_fkey")
+  writeups         writeups?             @relation(fields: [writeupsId], references: [id], map: "Challenges_writeupsId_fkey")
+
+  @@index([first_blood], map: "Challenges_first_blood_fkey")
+  @@index([writeupsId], map: "Challenges_writeupsId_fkey")
+}
+
+model chapter {
+  id        String   @id @default(cuid())
+  title        String
+  description  String?        @db.Text
+  videoUrl     String?        @db.Text
+  position     Int
+  published    Boolean        @default(false)
+  isFree       Boolean        @default(false)
+  courseId     String
+  createdAt    DateTime       @default(now())
+  updatedAt DateTime @updatedAt
+  course       course         @relation(fields: [courseId], references: [id], onDelete: Cascade, map: "Chapter_courseId_fkey")
+  muxdata      muxdata?
+  userprogress userprogress[]
+
+  @@index([courseId], map: "Chapter_courseId_idx")
+}
+
+model course {
+  id        String   @id @default(cuid())
+  userId      String
+  title       String       @db.Text
+  description String?      @db.Text
+  thumbnail   String?      @db.Text
+  price       Float?
+  published   Boolean      @default(false)
+  categoryId  String?
+  createAt    DateTime     @default(now())
+   updatedAt DateTime @updatedAt
+  tags        Json?
+  attachment  attachment[]
+  chapter     chapter[]
+  category    category?    @relation(fields: [categoryId], references: [id], map: "Course_categoryId_fkey")
+  user        user         @relation(fields: [userId], references: [id], map: "Course_userId_fkey")
+  purchase    purchase[]
+
+  @@index([categoryId], map: "Course_categoryId_idx")
+  @@index([userId], map: "Course_userId_fkey")
+  @@fulltext([title], map: "Course_title_idx")
+}
+
+model event {
+ id          String   @id @default(cuid())
+  userId      String
+  title       String
+  thumbnail   String?
+  description String?  @db.Text
+  status      String?
+  date        String
+  createAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Event_userId_fkey")
+
+  @@index([userId], map: "Event_userId_fkey")
+}
+
+model gateway {
+  id         String   @id
+  userId     String
+  customerId String   @unique(map: "Gateway_customerId_key")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Gateway_userId_fkey")
+
+  @@index([userId], map: "Gateway_userId_idx")
+}
+
+model jointeam {
+  id        String   @id
+  userId    String
+  teamId    String
+  createdAt DateTime @default(now())
+  teams     teams    @relation(fields: [teamId], references: [id], onDelete: Cascade, map: "JoinTeam_teamId_fkey")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "JoinTeam_userId_fkey")
+
+  @@index([teamId], map: "JoinTeam_teamId_fkey")
+  @@index([userId], map: "JoinTeam_userId_fkey")
+}
+
+model muxdata {
+    id         String   @id @default(cuid())
+  assetId    String
+  playbackId String?
+  chapterId  String   @unique(map: "MuxData_chapterId_key")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  chapter    chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade, map: "MuxData_chapterId_fkey")
+}
+
+model news {
+  id        String   @id @default(cuid())
+  title     String
+  content   Json?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  authorId  String
+  user      user     @relation(fields: [authorId], references: [id], map: "News_authorId_fkey")
+
+  @@index([authorId], map: "News_authorId_fkey")
+}
+
+model notification_subscribers {
+  id           String   @id
+  userId       String
+  subscription String   @db.LongText
+  createAt     DateTime @default(now())
+  updatedAt    DateTime
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Notification_subscribers_userId_fkey")
+
+  @@index([userId], map: "Notification_subscribers_userId_fkey")
+}
+
+model notifications {
+  id        String   @id
+  userId    String
+  payload   Json
+  createAt  DateTime @default(now())
+  updatedAt DateTime
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Notifications_userId_fkey")
+
+  @@index([userId], map: "Notifications_userId_fkey")
+}
+
+model purchase {
+  id        String   @id
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  course    course   @relation(fields: [courseId], references: [id], onDelete: Cascade, map: "Purchase_courseId_fkey")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Purchase_userId_fkey")
+
+  @@unique([userId, courseId], map: "Purchase_userId_courseId_key")
+  @@index([courseId], map: "Purchase_courseId_fkey")
+  @@index([userId, courseId], map: "Purchase_userId_courseId_idx")
+}
+
+model season_challenge_tag {
+  id                String             @id
+  tag_id            String
+  challengesId      String?
+  season_challenges season_challenges? @relation(fields: [challengesId], references: [id], map: "Season_challenge_Tag_challengesId_fkey")
+  tag               tag                @relation(fields: [tag_id], references: [id], map: "Season_challenge_Tag_tag_id_fkey")
+
+  @@index([challengesId], map: "Season_challenge_Tag_challengesId_fkey")
+  @@index([tag_id], map: "Season_challenge_Tag_tag_id_fkey")
+}
+
+model season_challenges {
+  id                       String                       @id
+  seasonId                 String
+  category                 String
+  title                    String                       @unique(map: "Season_Challenges_title_key")
+  thumbnail                String?
+  difficulty               season_challenges_difficulty
+  description              String?
+  points                   Int
+  flag                     String
+  first_blood              String?
+  writeupsId               String?
+  created_date             DateTime                     @default(now()) @db.Timestamp(0)
+  published                Boolean                      @default(false)
+  challenge_solved         challenge_solved[]
+  season_challenge_tag     season_challenge_tag[]
+  user                     user?                        @relation(fields: [first_blood], references: [id], map: "Season_Challenges_first_blood_fkey")
+  seasons                  seasons                      @relation(fields: [seasonId], references: [id], onDelete: Cascade, map: "Season_Challenges_seasonId_fkey")
+  writeups                 writeups?                    @relation(fields: [writeupsId], references: [id], map: "Season_Challenges_writeupsId_fkey")
+  season_challenges_solved season_challenges_solved[]
+
+  @@index([first_blood], map: "Season_Challenges_first_blood_fkey")
+  @@index([seasonId], map: "Season_Challenges_seasonId_fkey")
+  @@index([writeupsId], map: "Season_Challenges_writeupsId_fkey")
+}
+
+model season_challenges_solved {
+  id                String            @id
+  seasonId          String
+  challengeId       String
+  userId            String
+  createAt          DateTime          @default(now())
+  updatedAt         DateTime
+  season_challenges season_challenges @relation(fields: [challengeId], references: [id], onDelete: Cascade, map: "Season_challenges_solved_challengeId_fkey")
+  seasons           seasons           @relation(fields: [seasonId], references: [id], onDelete: Cascade, map: "Season_challenges_solved_seasonId_fkey")
+  user              user              @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Season_challenges_solved_userId_fkey")
+
+  @@index([challengeId], map: "Season_challenges_solved_challengeId_fkey")
+  @@index([seasonId], map: "Season_challenges_solved_seasonId_fkey")
+  @@index([userId], map: "Season_challenges_solved_userId_fkey")
+}
+
+model seasons {
+  id                       String                     @id
+  title                    String
+  description              String                     @db.LongText
+  thumbnail                String
+  start                    DateTime
+  end                      DateTime
+  status                   seasons_status
+  published                Boolean                    @default(false)
+  createAt                 DateTime                   @default(now())
+  updatedAt                DateTime
+  season_challenges        season_challenges[]
+  season_challenges_solved season_challenges_solved[]
+}
+
+model session {
+  id           String   @id
+  sessionToken String   @unique(map: "Session_sessionToken_key")
+  userId       String
+  expires      DateTime
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Session_userId_fkey")
+
+  @@index([userId], map: "Session_userId_fkey")
+}
+
+model tag {
+  id                   String                 @id
+  tag                  String
+  createdAt            DateTime               @default(now())
+  challenge_tag        challenge_tag[]
+  season_challenge_tag season_challenge_tag[]
+}
+
+model teams {
+  id String @id @default(cuid())
+  name                     String     @unique(map: "Teams_name_key")
+ password                 String     @default("$2b$10$CwTycUXWue0Thq9StjUM0uJ8b.0Yh8c1mGJZ0xE6m07JfQeBC.3q")
+  leader                   String
+  created_date             DateTime   @default(now()) @db.Timestamp(0)
+  points                   Int        @default(0)
+  background               String?
+  jointeam                 jointeam[]
+  user_teams_leaderTouser  user       @relation("teams_leaderTouser", fields: [leader], references: [id], onDelete: Cascade, map: "Teams_leader_fkey")
+  user_user_team_idToteams user[]     @relation("user_team_idToteams")
+
+  @@index([leader], map: "Teams_leader_fkey")
+}
+
+model user {
+   id            String   @id @default(cuid())
+    username String? @unique(map: "User_username_key")
+  email                     String                     @unique(map: "User_email_key")
+  emailVerified             DateTime?
+  image                     String?
+  role                      user_role                  @default(USER)
+  description               String?                    @db.LongText
+  createdAt                 DateTime                   @default(now())
+  fname                     String?
+  lname                     String?
+  team_id                   String?
+    points        Int      @default(0)
+    first_bloods  Int      @default(0)
+  account                   account[]
+  achievements              achievements[]
+  blogs                     blogs[]
+  challenge_solved          challenge_solved[]
+  challenges                challenges[]
+  course                    course[]
+  event                     event[]
+  gateway                   gateway[]
+  jointeam                  jointeam[]
+  news                      news[]
+  notification_subscribers  notification_subscribers[]
+  notifications             notifications[]
+  purchase                  purchase[]
+  season_challenges         season_challenges[]
+  season_challenges_solved  season_challenges_solved[]
+  session                   session[]
+  teams_teams_leaderTouser  teams[]                    @relation("teams_leaderTouser")
+  teams_user_team_idToteams teams?                     @relation("user_team_idToteams", fields: [team_id], references: [id], onDelete: Cascade, map: "team")
+  userprogress              userprogress[]
+  writeups                  writeups[]
+
+  @@index([team_id], map: "team")
+}
+
+model userprogress {
+  id         String   @id @default(cuid())
+  userId      String
+  chapterId   String
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  chapter     chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade, map: "UserProgress_chapterId_fkey")
+  user        user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserProgress_userId_fkey")
+
+  @@unique([userId, chapterId], map: "UserProgress_userId_chapterId_key")
+  @@index([chapterId, userId], map: "UserProgress_chapterId_userId_idx")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique(map: "VerificationToken_token_key")
+  expires    DateTime
+
+  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+}
+
+model writeups {
+  id         String   @id @default(cuid())
+  title             String
+  content           Json?
+  thumbnail         String?
+  published         Boolean             @default(false)
+  created_date      DateTime            @default(now()) @db.Timestamp(0)
+  authorId          String
+  challenges        challenges[]
+  season_challenges season_challenges[]
+  user              user                @relation(fields: [authorId], references: [id], map: "Writeups_authorId_fkey")
+
+  @@index([authorId], map: "Writeups_authorId_fkey")
+}
+
+enum challenges_difficulty {
+  EASY
+  MEDIUM
+  HARD
+  INSANE
+}
+
+enum season_challenges_difficulty {
+  EASY
+  MEDIUM
+  HARD
+  INSANE
+}
+
+enum user_role {
+  ADMIN
+  USER
+}
+
+enum seasons_status {
+  COMING
+  LIVE
+  ENDED
+}
