@@ -1,6 +1,8 @@
 import prisma from "@/prisma/client";
 import { NextResponse } from "next/server";
 
+// 💡 Add this line to force the route to run dynamically at request time
+export const dynamic = "force-dynamic";
 export async function GET() {
   const data = await prisma.user.findMany({
     select: {
